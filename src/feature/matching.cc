@@ -1100,7 +1100,7 @@ VocabTreeFeatureMatcher::VocabTreeFeatureMatcher(
     : options_(options),
       match_options_(match_options),
       database_(database_path),
-      cache_(5 * options_.num_images, &database_),
+      cache_(database_.NumImages() * options_.num_images, &database_),
       matcher_(match_options, &database_, &cache_) {
   CHECK(options_.Check());
   CHECK(match_options_.Check());
@@ -1177,7 +1177,7 @@ SpatialFeatureMatcher::SpatialFeatureMatcher(
     : options_(options),
       match_options_(match_options),
       database_(database_path),
-      cache_(5 * options_.max_num_neighbors, &database_),
+      cache_(database_.NumImages(), &database_),
       matcher_(match_options, &database_, &cache_) {
   CHECK(options_.Check());
   CHECK(match_options_.Check());
