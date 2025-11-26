@@ -1100,13 +1100,22 @@ VocabTreeFeatureMatcher::VocabTreeFeatureMatcher(
     : options_(options),
       match_options_(match_options),
       database_(database_path),
-      cache_(database_.NumImages() * options_.num_images, &database_),
+      cache_(database_.NumImages() , &database_),
       matcher_(match_options, &database_, &cache_) {
   CHECK(options_.Check());
   CHECK(match_options_.Check());
 }
 
 void VocabTreeFeatureMatcher::Run() {
+  LOG(INFO) << "VocabTreeMatchingOptions:";  
+  LOG(INFO) << "  num_images: " << options_.num_images;  
+  LOG(INFO) << "  num_nearest_neighbors: " << options_.num_nearest_neighbors;  
+  LOG(INFO) << "  num_checks: " << options_.num_checks;  
+  LOG(INFO) << "  num_images_after_verification: " << options_.num_images_after_verification;  
+  LOG(INFO) << "  max_num_features: " << options_.max_num_features;  
+  LOG(INFO) << "  vocab_tree_path: " << options_.vocab_tree_path;  
+  LOG(INFO) << "  match_list_path: " << options_.match_list_path;
+  
   PrintHeading1("Vocabulary tree feature matching");
 
   if (!matcher_.Setup()) {
@@ -1177,7 +1186,7 @@ SpatialFeatureMatcher::SpatialFeatureMatcher(
     : options_(options),
       match_options_(match_options),
       database_(database_path),
-      cache_(database_.NumImages(), &database_),
+      cache_(5 * options_.max_num_neighbors, &database_),
       matcher_(match_options, &database_, &cache_) {
   CHECK(options_.Check());
   CHECK(match_options_.Check());
