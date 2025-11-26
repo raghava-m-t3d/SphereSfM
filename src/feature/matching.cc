@@ -1100,7 +1100,7 @@ VocabTreeFeatureMatcher::VocabTreeFeatureMatcher(
     : options_(options),
       match_options_(match_options),
       database_(database_path),
-      cache_(database_.NumImages() , &database_),
+      cache_(50 * options_.num_images, &database_),
       matcher_(match_options, &database_, &cache_) {
   CHECK(options_.Check());
   CHECK(match_options_.Check());
