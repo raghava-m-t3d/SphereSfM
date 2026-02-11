@@ -129,7 +129,10 @@ struct IncrementalMapperOptions {
 
   // If reconstruction is provided as input, fix the existing image poses.
   bool fix_existing_images = false;
-
+  
+  // If reconstruction is provided as input, fix the images listed in the text file .
+  std::string fix_images_path;
+  
   // Whether to process sphere cameras.
   bool sphere_camera = false;
 

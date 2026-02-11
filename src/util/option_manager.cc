@@ -541,6 +541,8 @@ void OptionManager::AddMapperOptions() {
                               &mapper->snapshot_images_freq);
   AddAndRegisterDefaultOption("Mapper.fix_existing_images",
                               &mapper->fix_existing_images);
+  AddAndRegisterDefaultOption("Mapper.fix_images_path",
+                              &mapper->fix_images_path);
   AddAndRegisterDefaultOption("Mapper.sphere_camera", &mapper->sphere_camera);
 
   // IncrementalMapper.

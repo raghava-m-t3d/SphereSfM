@@ -195,6 +195,7 @@ IncrementalMapper::Options IncrementalMapperOptions::Mapper() const {
   options.local_ba_num_images = ba_local_num_images;
   options.fix_existing_images = fix_existing_images;
   options.sphere_camera = sphere_camera;
+  options.fix_images_path = fix_images_path;
   return options;
 }
 
@@ -397,7 +398,12 @@ void IncrementalMapperController::Reconstruct(
     Reconstruction& reconstruction =
         reconstruction_manager_->Get(reconstruction_idx);
 
-    mapper.BeginReconstruction(&reconstruction);
+    if (!init_mapper_options.fix_images_path.empty()) {
+      mapper.BeginReconstruction(&reconstruction, init_mapper_options);
+    }
+    else {    
+      mapper.BeginReconstruction(&reconstruction);
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     // Register initial pair

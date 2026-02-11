@@ -119,6 +119,9 @@ class IncrementalMapper {
     // If reconstruction is provided as input, fix the existing image poses.
     bool fix_existing_images = false;
 
+    // If reconstruction is provided as input, fix the images listed in the text file .
+    std::string fix_images_path;
+
 	// Whether to process sphere cameras.
     bool sphere_camera = false;
 
@@ -152,6 +155,11 @@ class IncrementalMapper {
   // registered images (in which case `RegisterNextImage` must be called) or
   // which is empty (in which case `RegisterInitialImagePair` must be called).
   void BeginReconstruction(Reconstruction* reconstruction);
+
+  // Same as `BeginReconstruction`, but with options. If `fix_images_path` is
+  // provided, the images listed in the text file will be fixed during bundle
+  // adjustment. The text file should contain one image name per line.
+  void BeginReconstruction(  Reconstruction* reconstruction, const Options& options);
 
   // Cleanup the mapper after the current reconstruction is done. If the
   // model is discarded, the number of total and shared registered images will

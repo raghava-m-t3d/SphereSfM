@@ -131,6 +131,59 @@ void IncrementalMapper::BeginReconstruction(Reconstruction* reconstruction) {
   num_reg_trials_.clear();
 }
 
+void IncrementalMapper::BeginReconstruction(
+    Reconstruction* reconstruction, const Options& options) {
+  CHECK(reconstruction_ == nullptr);
+  reconstruction_ = reconstruction;
+  reconstruction_->Load(*database_cache_);
+  reconstruction_->SetUp(&database_cache_->CorrespondenceGraph());
+  triangulator_ = std::make_unique<IncrementalTriangulator>(
+      &database_cache_->CorrespondenceGraph(), reconstruction);
+
+  num_shared_reg_images_ = 0;
+  num_reg_images_per_camera_.clear();
+  for (const image_t image_id : reconstruction_->RegImageIds()) {
+    RegisterImageEvent(image_id);
+  }
+
+  // Populate existing_image_ids_ from fix_images_path if provided
+  existing_image_ids_.clear();
+  if (!options.fix_images_path.empty()) {
+    std::ifstream infile(options.fix_images_path);
+    if (!infile.is_open()) {
+      LOG(ERROR) << "Could not open fix_images_path: " << options.fix_images_path;
+    } else {
+      std::string image_name;
+
+      while (std::getline(infile, image_name)) {
+        StringTrim(&image_name);  // Remove whitespace/newlines
+        if (image_name.empty()) continue;
+
+        // Find image by name in the reconstruction
+        const Image* image = reconstruction->FindImageWithName(image_name);
+
+        if (image != nullptr) {
+          existing_image_ids_.insert(image->ImageId());
+        } else {
+          LOG(WARNING) << "Image listed in fix_images_path not found: "
+                      << image_name;
+        }
+      }
+    }
+  } else {
+    existing_image_ids_ =
+        std::unordered_set<image_t>(reconstruction->RegImageIds().begin(),
+                                    reconstruction->RegImageIds().end());
+  }
+
+
+  prev_init_image_pair_id_ = kInvalidImagePairId;
+  prev_init_two_view_geometry_ = TwoViewGeometry();
+
+  filtered_images_.clear();
+  num_reg_trials_.clear();
+}
+
 void IncrementalMapper::EndReconstruction(const bool discard) {
   CHECK_NOTNULL(reconstruction_);
 
