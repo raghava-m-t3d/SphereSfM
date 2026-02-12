@@ -106,7 +106,7 @@ void IterativeGlobalRefinement(const IncrementalMapperOptions& options,
   std::cout << "  => Retriangulated observations: "
             << mapper->Retriangulate(options.Triangulation()) << std::endl;
 
-  for (int i = 0; i < options.ba_global_max_refinements; ++i) {
+  for (int i = 0; i < options.ba_global_max_refinements && !options.ba_global_disable; ++i) {
     const size_t num_observations =
         mapper->GetReconstruction().ComputeNumObservations();
     size_t num_changed_observations = 0;
@@ -195,7 +195,8 @@ IncrementalMapper::Options IncrementalMapperOptions::Mapper() const {
   options.local_ba_num_images = ba_local_num_images;
   options.fix_existing_images = fix_existing_images;
   options.sphere_camera = sphere_camera;
-  options.fix_images_path = fix_images_path;
+  options.fix_images_list_path = fix_images_list_path;
+  options.ba_global_disable = ba_global_disable;
   return options;
 }
 
@@ -398,7 +399,7 @@ void IncrementalMapperController::Reconstruct(
     Reconstruction& reconstruction =
         reconstruction_manager_->Get(reconstruction_idx);
 
-    if (!init_mapper_options.fix_images_path.empty()) {
+    if (!init_mapper_options.fix_images_list_path.empty()) {
       mapper.BeginReconstruction(&reconstruction, init_mapper_options);
     }
     else {    

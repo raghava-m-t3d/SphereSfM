@@ -532,6 +532,8 @@ void OptionManager::AddMapperOptions() {
                               &mapper->ba_global_max_refinements);
   AddAndRegisterDefaultOption("Mapper.ba_global_max_refinement_change",
                               &mapper->ba_global_max_refinement_change);
+  AddAndRegisterDefaultOption("Mapper.ba_global_disable",
+                              &mapper->ba_global_disable);                              
   AddAndRegisterDefaultOption("Mapper.ba_local_max_refinements",
                               &mapper->ba_local_max_refinements);
   AddAndRegisterDefaultOption("Mapper.ba_local_max_refinement_change",
@@ -541,8 +543,8 @@ void OptionManager::AddMapperOptions() {
                               &mapper->snapshot_images_freq);
   AddAndRegisterDefaultOption("Mapper.fix_existing_images",
                               &mapper->fix_existing_images);
-  AddAndRegisterDefaultOption("Mapper.fix_images_path",
-                              &mapper->fix_images_path);
+  AddAndRegisterDefaultOption("Mapper.fix_images_list_path",
+                              &mapper->fix_images_list_path);
   AddAndRegisterDefaultOption("Mapper.sphere_camera", &mapper->sphere_camera);
 
   // IncrementalMapper.

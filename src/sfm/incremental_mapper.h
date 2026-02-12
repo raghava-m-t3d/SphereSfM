@@ -119,8 +119,11 @@ class IncrementalMapper {
     // If reconstruction is provided as input, fix the existing image poses.
     bool fix_existing_images = false;
 
+    // whether to run global bundle adjustment or not
+    bool ba_global_disable = false;
+
     // If reconstruction is provided as input, fix the images listed in the text file .
-    std::string fix_images_path;
+    std::string fix_images_list_path;
 
 	// Whether to process sphere cameras.
     bool sphere_camera = false;
@@ -138,6 +141,11 @@ class IncrementalMapper {
         ImageSelectionMethod::MIN_UNCERTAINTY;
 
     bool Check() const;
+    // The growth rates after which to perform global bundle adjustment.
+    double ba_global_images_ratio = 1.1;
+    double ba_global_points_ratio = 1.1;
+    int ba_global_images_freq = 500;
+    int ba_global_points_freq = 250000;
   };
 
   struct LocalBundleAdjustmentReport {
@@ -156,7 +164,7 @@ class IncrementalMapper {
   // which is empty (in which case `RegisterInitialImagePair` must be called).
   void BeginReconstruction(Reconstruction* reconstruction);
 
-  // Same as `BeginReconstruction`, but with options. If `fix_images_path` is
+  // Same as `BeginReconstruction`, but with options. If `fix_images_list_path` is
   // provided, the images listed in the text file will be fixed during bundle
   // adjustment. The text file should contain one image name per line.
   void BeginReconstruction(  Reconstruction* reconstruction, const Options& options);

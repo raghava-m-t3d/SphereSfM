@@ -105,6 +105,9 @@ struct IncrementalMapperOptions {
   int ba_global_images_freq = 500;
   int ba_global_points_freq = 250000;
 
+  // Whether to disable global bundle adjustment.
+  bool ba_global_disable = false;
+
   // Ceres solver function tolerance for global bundle adjustment
   double ba_global_function_tolerance = 0.0;
 
@@ -131,7 +134,7 @@ struct IncrementalMapperOptions {
   bool fix_existing_images = false;
   
   // If reconstruction is provided as input, fix the images listed in the text file .
-  std::string fix_images_path;
+  std::string fix_images_list_path;
   
   // Whether to process sphere cameras.
   bool sphere_camera = false;

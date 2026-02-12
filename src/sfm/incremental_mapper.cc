@@ -146,12 +146,12 @@ void IncrementalMapper::BeginReconstruction(
     RegisterImageEvent(image_id);
   }
 
-  // Populate existing_image_ids_ from fix_images_path if provided
+  // Populate existing_image_ids_ from fix_images_list_path if provided
   existing_image_ids_.clear();
-  if (!options.fix_images_path.empty()) {
-    std::ifstream infile(options.fix_images_path);
+  if (!options.fix_images_list_path.empty()) {
+    std::ifstream infile(options.fix_images_list_path);
     if (!infile.is_open()) {
-      LOG(ERROR) << "Could not open fix_images_path: " << options.fix_images_path;
+      LOG(ERROR) << "Could not open fix_images_list_path: " << options.fix_images_list_path;
     } else {
       std::string image_name;
 
@@ -165,7 +165,7 @@ void IncrementalMapper::BeginReconstruction(
         if (image != nullptr) {
           existing_image_ids_.insert(image->ImageId());
         } else {
-          LOG(WARNING) << "Image listed in fix_images_path not found: "
+          LOG(WARNING) << "Image listed in fix_images_list_path not found: "
                       << image_name;
         }
       }
