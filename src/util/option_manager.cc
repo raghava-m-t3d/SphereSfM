@@ -471,6 +471,8 @@ void OptionManager::AddBundleAdjustmentOptions() {
                               &bundle_adjustment->refine_extra_params);
   AddAndRegisterDefaultOption("BundleAdjustment.refine_extrinsics",
                               &bundle_adjustment->refine_extrinsics);
+    AddAndRegisterDefaultOption("BundleAdjustment.fix_images_list_path",
+                              &bundle_adjustment->fix_images_list_path);
 }
 
 void OptionManager::AddMapperOptions() {

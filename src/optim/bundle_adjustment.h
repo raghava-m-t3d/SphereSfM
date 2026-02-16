@@ -68,6 +68,9 @@ struct BundleAdjustmentOptions {
   // Whether to print a final summary.
   bool print_summary = true;
 
+  // If reconstruction is provided as input, fix the images listed in the text file .
+  std::string fix_images_list_path;
+
   // Minimum number of residuals to enable multi-threading. Note that
   // single-threaded is typically better for small bundle adjustment problems
   // due to the overhead of threading.

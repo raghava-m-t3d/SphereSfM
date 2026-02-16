@@ -105,7 +105,8 @@ void IterativeGlobalRefinement(const IncrementalMapperOptions& options,
   CompleteAndMergeTracks(options, mapper);
   std::cout << "  => Retriangulated observations: "
             << mapper->Retriangulate(options.Triangulation()) << std::endl;
-
+  std::cout << "  => Global Bundle Adjustment Disabled:" <<   options.ba_global_disable << std::endl;
+  
   for (int i = 0; i < options.ba_global_max_refinements && !options.ba_global_disable; ++i) {
     const size_t num_observations =
         mapper->GetReconstruction().ComputeNumObservations();

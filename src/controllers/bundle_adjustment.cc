@@ -92,8 +92,34 @@ void BundleAdjustmentController::Run() {
   for (const image_t image_id : reg_image_ids) {
     ba_config.AddImage(image_id);
   }
-  ba_config.SetConstantPose(reg_image_ids[0]);
-  ba_config.SetConstantTvec(reg_image_ids[1], {0});
+
+  // Fix images listed in the fix_images_list_path file.
+  if (!ba_options.fix_images_list_path.empty()) {
+    std::ifstream infile(ba_options.fix_images_list_path);
+    if (!infile.is_open()) {
+      LOG(ERROR) << "Could not open fix_images_list_path: " << ba_options.fix_images_list_path;
+    } else {
+      std::string image_name;
+
+      while (std::getline(infile, image_name)) {
+        StringTrim(&image_name);  // Remove whitespace/newlines
+        if (image_name.empty()) continue;
+
+        // Find image by name in the reconstruction
+        const Image* image = reconstruction_->FindImageWithName(image_name);
+
+        if (image != nullptr) {
+          ba_config.SetConstantPose(image->ImageId());
+          LOG(INFO) << "Fixing pose for image: " << image_name;          
+        } else {
+          LOG(WARNING) << "Image listed in fix_images_list_path not found: "
+                      << image_name;
+        }
+      }
+    }
+  }
+  // ba_config.SetConstantPose(reg_image_ids[0]);
+  // ba_config.SetConstantTvec(reg_image_ids[1], {0});
 
   // Run bundle adjustment.
   BundleAdjuster bundle_adjuster(ba_options, ba_config);
