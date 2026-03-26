@@ -239,11 +239,13 @@ int RunImageRectifier(int argc, char** argv) {
 int RunImageRegistrator(int argc, char** argv) {
   std::string input_path;
   std::string output_path;
+  std::string image_list_path;
 
   OptionManager options;
   options.AddDatabaseOptions();
   options.AddRequiredOption("input_path", &input_path);
   options.AddRequiredOption("output_path", &output_path);
+  options.AddDefaultOption("image_list_path", &image_list_path);
   options.AddMapperOptions();
   options.Parse(argc, argv);
 
@@ -255,6 +257,12 @@ int RunImageRegistrator(int argc, char** argv) {
   if (!ExistsDir(output_path)) {
     std::cerr << "ERROR: `output_path` is not a directory" << std::endl;
     return EXIT_FAILURE;
+  }
+
+  if (!image_list_path.empty()) {
+    const auto image_names = ReadTextFileLines(image_list_path);
+    options.mapper->image_names =
+        std::unordered_set<std::string>(image_names.begin(), image_names.end());
   }
 
   PrintHeading1("Loading database");
@@ -285,8 +293,13 @@ int RunImageRegistrator(int argc, char** argv) {
   const auto mapper_options = options.mapper->Mapper();
 
   for (const auto& image : reconstruction.Images()) {
-    if (image.second.IsRegistered()) {
+    if (image.second.IsRegistered() ) {
       continue;
+    }
+    
+    if (!options.mapper->image_names.empty() &&   
+        options.mapper->image_names.find(image.second.Name()) == options.mapper->image_names.end()) {  
+      continue;  
     }
 
     PrintHeading1("Registering image #" + std::to_string(image.first) + " (" +
