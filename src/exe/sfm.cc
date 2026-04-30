@@ -486,6 +486,12 @@ int RunPointTriangulatorImpl(Reconstruction& reconstruction,
     }
   }
 
+  // When BA is disabled the loop above never runs, so FilterPoints is called
+  // once here to remove bad 3D points that BA would have cleaned up otherwise.
+  if (mapper_options.ba_global_disable) {
+    FilterPoints(mapper_options, &mapper);
+  }
+
   PrintHeading1("Extracting colors");
   reconstruction.ExtractColorsForAllImages(image_path);
 
@@ -718,3 +724,4 @@ int RunRigBundleAdjuster(int argc, char** argv) {
 }
 
 }  // namespace colmap
+
