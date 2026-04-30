@@ -464,7 +464,7 @@ int RunPointTriangulatorImpl(Reconstruction& reconstruction,
     ba_config.AddImage(image_id);
   }
 
-  for (int i = 0; i < mapper_options.ba_global_max_refinements; ++i) {
+  for (int i = 0; i < mapper_options.ba_global_max_refinements && !mapper_options.ba_global_disable; ++i) {
     // Avoid degeneracies in bundle adjustment.
     reconstruction.FilterObservationsWithNegativeDepth();
 
