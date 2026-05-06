@@ -464,10 +464,11 @@ int RunPointTriangulatorImpl(Reconstruction& reconstruction,
     ba_config.AddImage(image_id);
   }
 
-  //  (FilterObservationsWithNegativeDepth always happens, even when BA is disabled).
-  reconstruction.FilterObservationsWithNegativeDepth();
 
   for (int i = 0; i < mapper_options.ba_global_max_refinements && !mapper_options.ba_global_disable; ++i) {
+    // Avoid degeneracies in bundle adjustment.
+    reconstruction.FilterObservationsWithNegativeDepth();
+
     const size_t num_observations = reconstruction.ComputeNumObservations();
 
     PrintHeading1("Bundle adjustment");
@@ -488,7 +489,9 @@ int RunPointTriangulatorImpl(Reconstruction& reconstruction,
 
   // When BA is disabled the loop above never runs, so FilterPoints is called
   // once here to remove bad 3D points that BA would have cleaned up otherwise.
+
   if (mapper_options.ba_global_disable) {
+    reconstruction.FilterObservationsWithNegativeDepth();
     FilterPoints(mapper_options, &mapper);
   }
 
