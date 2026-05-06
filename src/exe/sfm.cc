@@ -464,7 +464,8 @@ int RunPointTriangulatorImpl(Reconstruction& reconstruction,
     ba_config.AddImage(image_id);
   }
 
-  for (int i = 0; i < mapper_options.ba_global_max_refinements; ++i) {
+
+  for (int i = 0; i < mapper_options.ba_global_max_refinements && !mapper_options.ba_global_disable; ++i) {
     // Avoid degeneracies in bundle adjustment.
     reconstruction.FilterObservationsWithNegativeDepth();
 
@@ -484,6 +485,14 @@ int RunPointTriangulatorImpl(Reconstruction& reconstruction,
     if (changed < mapper_options.ba_global_max_refinement_change) {
       break;
     }
+  }
+
+  // When BA is disabled the loop above never runs, so FilterPoints is called
+  // once here to remove bad 3D points that BA would have cleaned up otherwise.
+
+  if (mapper_options.ba_global_disable) {
+    reconstruction.FilterObservationsWithNegativeDepth();
+    FilterPoints(mapper_options, &mapper);
   }
 
   PrintHeading1("Extracting colors");
@@ -718,3 +727,4 @@ int RunRigBundleAdjuster(int argc, char** argv) {
 }
 
 }  // namespace colmap
+
